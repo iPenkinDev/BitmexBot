@@ -4,7 +4,7 @@ import org.ipenkin.framework.constants.OrderSide;
 import org.ipenkin.framework.constants.OrderType;
 import org.ipenkin.framework.constants.Symbol;
 
-public class LimitOrder {
+public class LimitOrder implements Order{
     private Symbol symbol;
     private OrderSide side;
     private Double simpleOrderQty;
