@@ -5,6 +5,15 @@ public class URL {
     private String net;
     private String baseUrl;
     private String apiPath = UtilURL.API_PATH;
+    private String resourcePath;
+
+    public String getResourcePath() {
+        return resourcePath;
+    }
+
+    public void setResourcePath(String resourcePath) {
+        this.resourcePath = resourcePath;
+    }
 
     public String getProtocol() {
         return protocol;
@@ -36,5 +45,10 @@ public class URL {
 
     public void setApiPath(String apiPath) {
         this.apiPath = apiPath;
+    }
+
+    @Override
+    public String toString() {
+        return protocol + net + baseUrl + apiPath + resourcePath;
     }
 }

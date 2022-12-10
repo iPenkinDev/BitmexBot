@@ -16,29 +16,17 @@ public class LimitOrder implements Order{
     private String clOrdLinkID;
     private Double pegOffsetValue;
     private String pegPriceType;
-    private OrderType ordType;
+    private OrderType ordType = OrderType.LIMIT;
     private String timeInForce;
     private String execInst;
     private String contingencyType;
     private String text;
 
-    public LimitOrder(Symbol symbol, OrderSide side, Double simpleOrderQty, Double orderQty, Double price, Double displayQty, Double stopPx, String clOrdID, String clOrdLinkID, Double pegOffsetValue, String pegPriceType, OrderType ordType, String timeInForce, String execInst, String contingencyType, String text) {
+    public LimitOrder(Symbol symbol, OrderSide side, Double orderQty, Double price) {
         this.symbol = symbol;
         this.side = side;
-        this.simpleOrderQty = simpleOrderQty;
         this.orderQty = orderQty;
         this.price = price;
-        this.displayQty = displayQty;
-        this.stopPx = stopPx;
-        this.clOrdID = clOrdID;
-        this.clOrdLinkID = clOrdLinkID;
-        this.pegOffsetValue = pegOffsetValue;
-        this.pegPriceType = pegPriceType;
-        this.ordType = ordType;
-        this.timeInForce = timeInForce;
-        this.execInst = execInst;
-        this.contingencyType = contingencyType;
-        this.text = text;
     }
 
     public Symbol getSymbol() {
@@ -49,8 +37,8 @@ public class LimitOrder implements Order{
         this.symbol = symbol;
     }
 
-    public OrderSide getSide() {
-        return side;
+    public String getSide() {
+        return side.toString();
     }
 
     public void setSide(OrderSide side) {
@@ -129,8 +117,8 @@ public class LimitOrder implements Order{
         this.pegPriceType = pegPriceType;
     }
 
-    public OrderType getOrdType() {
-        return ordType;
+    public String getOrdType() {
+        return ordType.toString();
     }
 
     public void setOrdType(OrderType ordType) {

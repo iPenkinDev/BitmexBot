@@ -19,6 +19,10 @@ public class URLBuilder {
         url.setApiPath(apiPath);
         return this;
     }
+    public URLBuilder resourcePath(String resourcePath){
+        url.setResourcePath(resourcePath);
+        return this;
+    }
 
     public URL buid(){
         return url;

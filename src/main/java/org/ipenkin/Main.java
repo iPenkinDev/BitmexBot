@@ -1,6 +1,13 @@
 package org.ipenkin;
 
+import com.google.gson.Gson;
 import org.ipenkin.authentication.Signature;
+import org.ipenkin.framework.BitmexClient;
+import org.ipenkin.framework.constants.OrderSide;
+import org.ipenkin.framework.constants.OrderType;
+import org.ipenkin.framework.constants.Symbol;
+import org.ipenkin.framework.order.LimitOrder;
+import org.ipenkin.framework.order.Order;
 
 import java.io.IOException;
 import java.net.URI;
@@ -12,6 +19,20 @@ import java.time.Instant;
 
 public class Main {
     public static void main(String[] args) {
+        String apiKey = "9dOh4fBzrinfYM3QHt-pDQkV";
+        String apiSecret = "1ke8EFliDV2NIfEXx3_gF73eDJjyUMbHumQ_GDIqc5cujgVb";
+
+        BitmexClient bitmexClient = new BitmexClient(apiKey, apiSecret, true);
+        LimitOrder order = new LimitOrder(Symbol.XBTUSD, OrderSide.SELL,100.0,19000.0);
+
+        HttpResponse<String> response = bitmexClient.sendOrder(order);
+        System.out.println(response.body());
+
+
+       // testQuery();
+    }
+
+    private static void testQuery() {
         String baseUrl = "https://testnet.bitmex.com";
         String apiKey = "9dOh4fBzrinfYM3QHt-pDQkV";
         String apiSecret = "1ke8EFliDV2NIfEXx3_gF73eDJjyUMbHumQ_GDIqc5cujgVb";
