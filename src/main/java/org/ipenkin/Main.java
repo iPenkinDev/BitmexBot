@@ -15,15 +15,17 @@ public class Main {
         String apiSecret = "kuK2CWx5RsLI68b4DZLnIX16XyqTupwFc3jTe8IWjmr0JN0E";
 
         BitmexClient bitmexClient = new BitmexClient(apiKey, apiSecret, true);
-        LimitOrder order = new LimitOrder(Symbol.XBTUSD, OrderSide.Buy,200.0,16000.0);
+        LimitOrder order = new LimitOrder(Symbol.XBTUSD, OrderSide.Buy, 200.0, 16000.0);
         MarketOrder marketOrder = new MarketOrder(Symbol.ETHUSD, OrderSide.Sell, 300.0);
 
-
-        HttpResponse<String> response = bitmexClient.sendOrder(order);
+       HttpResponse<String> response = bitmexClient.getPosition();
         System.out.println(response.body());
-
-        HttpResponse<String> httpResponse = bitmexClient.sendOrder(marketOrder);
-        httpResponse.body();
+//
+//        HttpResponse<String> response = bitmexClient.sendOrder(order);
+//        System.out.println(response.body());
+//
+//        HttpResponse<String> httpResponse = bitmexClient.sendOrder(marketOrder);
+//        httpResponse.body();
 
     }
 
