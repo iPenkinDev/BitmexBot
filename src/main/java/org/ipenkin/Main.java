@@ -19,8 +19,8 @@ import java.time.Instant;
 
 public class Main {
     public static void main(String[] args) {
-        String apiKey = "9dOh4fBzrinfYM3QHt-pDQkV";
-        String apiSecret = "1ke8EFliDV2NIfEXx3_gF73eDJjyUMbHumQ_GDIqc5cujgVb";
+        String apiKey = "6zP3XL1ssGDrlU74dyJxKhFf";
+        String apiSecret = "kuK2CWx5RsLI68b4DZLnIX16XyqTupwFc3jTe8IWjmr0JN0E";
 
         BitmexClient bitmexClient = new BitmexClient(apiKey, apiSecret, true);
         LimitOrder order = new LimitOrder(Symbol.XBTUSD, OrderSide.SELL,100.0,19000.0);
@@ -29,13 +29,13 @@ public class Main {
         System.out.println(response.body());
 
 
-       // testQuery();
+//        testQuery();
     }
 
     private static void testQuery() {
         String baseUrl = "https://testnet.bitmex.com";
-        String apiKey = "9dOh4fBzrinfYM3QHt-pDQkV";
-        String apiSecret = "1ke8EFliDV2NIfEXx3_gF73eDJjyUMbHumQ_GDIqc5cujgVb";
+        String apiKey = "6zP3XL1ssGDrlU74dyJxKhFf";
+        String apiSecret = "kuK2CWx5RsLI68b4DZLnIX16XyqTupwFc3jTe8IWjmr0JN0E";
         String verb = "GET";
         String path = "/api/v1/user/wallet";
         String expires = String.valueOf(Instant.now().getEpochSecond() + 100);

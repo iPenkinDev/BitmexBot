@@ -24,7 +24,7 @@ public class URLBuilder {
         return this;
     }
 
-    public URL buid(){
+    public URL build(){
         return url;
     }
 

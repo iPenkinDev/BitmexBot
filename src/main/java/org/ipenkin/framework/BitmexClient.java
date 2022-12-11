@@ -37,7 +37,7 @@ public class BitmexClient {
                 .baseUrl(UtilURL.BASE_URL)
                 .apiPath(UtilURL.API_PATH)
                 .resourcePath(ResourceURL.ORDER)
-                .buid();
+                .build();
         String orderToJson = new Gson().toJson(order);
 
         String expires = createExpires();
