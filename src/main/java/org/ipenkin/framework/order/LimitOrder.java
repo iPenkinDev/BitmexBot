@@ -16,7 +16,7 @@ public class LimitOrder implements Order{
     private String clOrdLinkID;
     private Double pegOffsetValue;
     private String pegPriceType;
-    private OrderType ordType = OrderType.LIMIT;
+    private OrderType ordType = OrderType.Limit;
     private String timeInForce;
     private String execInst;
     private String contingencyType;

@@ -30,7 +30,7 @@ public class BitmexClient {
         this.apiSecret = apiSecret;
     }
 
-    public HttpResponse<String> sendOrder(LimitOrder order) {
+    public HttpResponse<String> sendOrder(Order order) {
         URL url = new URLBuilder()
                 .protocol(UtilURL.PROTOCOL)
                 .net(getNet())
