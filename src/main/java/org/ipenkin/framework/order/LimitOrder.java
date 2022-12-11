@@ -1,5 +1,6 @@
 package org.ipenkin.framework.order;
 
+import org.ipenkin.framework.constants.ExecutionInstructions;
 import org.ipenkin.framework.constants.OrderSide;
 import org.ipenkin.framework.constants.OrderType;
 import org.ipenkin.framework.constants.Symbol;
@@ -18,15 +19,16 @@ public class LimitOrder implements Order{
     private String pegPriceType;
     private OrderType ordType = OrderType.Limit;
     private String timeInForce;
-    private String execInst;
+    private ExecutionInstructions execInst;
     private String contingencyType;
     private String text;
 
-    public LimitOrder(Symbol symbol, OrderSide side, Double orderQty, Double price) {
+    public LimitOrder(Symbol symbol, OrderSide side, Double orderQty, Double price, ExecutionInstructions execInst) {
         this.symbol = symbol;
         this.side = side;
         this.orderQty = orderQty;
         this.price = price;
+        this.execInst = execInst;
     }
 
     public Symbol getSymbol() {
@@ -134,10 +136,10 @@ public class LimitOrder implements Order{
     }
 
     public String getExecInst() {
-        return execInst;
+        return execInst.toString();
     }
 
-    public void setExecInst(String execInst) {
+    public void setExecInst(ExecutionInstructions execInst) {
         this.execInst = execInst;
     }
 

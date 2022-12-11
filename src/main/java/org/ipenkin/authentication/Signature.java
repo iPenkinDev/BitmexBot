@@ -14,8 +14,6 @@ public class Signature {
     }
 
     public String signatureToString(byte[] signature) {
-        String signatureStr = String.format("%032x", new BigInteger(1, signature));
-        System.out.println(signatureStr);
-        return signatureStr;
+        return String.format("%032x", new BigInteger(1, signature));
     }
 }

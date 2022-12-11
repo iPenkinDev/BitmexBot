@@ -1,13 +1,17 @@
 package org.ipenkin.model;
 
-import java.time.Instant;
-
 public class Model {
-    private static String apiKey;
-    private static String apiSecret;
+    private static String apiKey = "6zP3XL1ssGDrlU74dyJxKhFf";
+    private static String apiSecret = "kuK2CWx5RsLI68b4DZLnIX16XyqTupwFc3jTe8IWjmr0JN0E";
     private static double step;
     private static double level;
     private static double coef;
+
+    public Model(Double step, Double level, Double coef) {
+        this.step = step;
+        this.level = level;
+        this.coef = coef;
+    }
 
     public static String getApiKey() {
         return apiKey;
@@ -21,11 +25,24 @@ public class Model {
         return step;
     }
 
+    public static void setStep(double step) {
+        Model.step = step;
+    }
+
     public static double getLevel() {
         return level;
+    }
+
+    public static void setLevel(double level) {
+        Model.level = level;
     }
 
     public static double getCoef() {
         return coef;
     }
+
+    public static void setCoef(double coef) {
+        Model.coef = coef;
+    }
+
 }
