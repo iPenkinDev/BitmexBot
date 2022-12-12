@@ -4,10 +4,10 @@ public class Model {
     private static String apiKey = "6zP3XL1ssGDrlU74dyJxKhFf";
     private static String apiSecret = "kuK2CWx5RsLI68b4DZLnIX16XyqTupwFc3jTe8IWjmr0JN0E";
     private static double step;
-    private static double level;
+    private static int level;
     private static double coef;
 
-    public Model(Double step, Double level, Double coef) {
+    public Model(Double step, Integer level, Double coef) {
         this.step = step;
         this.level = level;
         this.coef = coef;
@@ -29,11 +29,11 @@ public class Model {
         Model.step = step;
     }
 
-    public static double getLevel() {
+    public static int getLevel() {
         return level;
     }
 
-    public static void setLevel(double level) {
+    public static void setLevel(int level) {
         Model.level = level;
     }
 
@@ -44,5 +44,4 @@ public class Model {
     public static void setCoef(double coef) {
         Model.coef = coef;
     }
-
 }

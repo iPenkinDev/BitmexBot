@@ -7,7 +7,6 @@ import org.ipenkin.framework.constants.URL.URL;
 import org.ipenkin.framework.constants.URL.URLBuilder;
 import org.ipenkin.framework.constants.URL.UtilURL;
 import org.ipenkin.framework.constants.Verb;
-import org.ipenkin.framework.order.LimitOrder;
 import org.ipenkin.framework.order.Order;
 
 import java.io.IOException;
@@ -94,6 +93,39 @@ public class BitmexClient {
             throw new RuntimeException(e);
         }
         return response;
+    }
+
+    public HttpResponse<String> getInstrumentPrice() {
+        URL url = new URLBuilder()
+                .protocol(UtilURL.PROTOCOL)
+                .net(getNet())
+                .baseUrl(UtilURL.BASE_URL)
+                .apiPath(UtilURL.API_PATH)
+                .resourcePath(ResourceURL.INSTRUMENT)
+                .build();
+        String data = "";
+        String expires = createExpires();
+        String signature = createSignature(url, Verb.GET.toString(), data, expires);
+        while (signature.length() != 64) {
+            expires = createExpires();
+            signature = createSignature(url, Verb.GET.toString(), data, expires);
+        }
+        HttpRequest request = HttpRequest.newBuilder()
+                .header("api-signature", signature)
+                .header("api-expires", expires)
+                .header("api-key", apiKey)
+                .uri(URI.create(url.toString()))
+                .GET()
+                .build();
+        HttpResponse<String> response;
+        try {
+            response =client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return response;
+
     }
 
     private String createSignature(URL url, String verb, String data, String expires) {

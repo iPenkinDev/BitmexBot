@@ -1,35 +1,45 @@
 package org.ipenkin;
 
+import com.google.gson.*;
 import org.ipenkin.framework.BitmexClient;
-import org.ipenkin.framework.constants.ExecutionInstructions;
-import org.ipenkin.framework.constants.OrderSide;
-import org.ipenkin.framework.constants.Symbol;
-import org.ipenkin.framework.order.LimitOrder;
-import org.ipenkin.framework.order.MarketOrder;
+import org.ipenkin.framework.Instrument;
 import org.ipenkin.model.Model;
 
 import java.net.http.HttpResponse;
+import java.util.Arrays;
 
 
+@SuppressWarnings("InstantiationOfUtilityClass")
 public class Main {
     private static Model model;
+    private static Double currentPrice;
 
     public static void main(String[] args) {
-
+        model = new Model(200.0, 3, 100.0);
         BitmexClient bitmexClient = new BitmexClient(Model.getApiKey(), Model.getApiSecret(), true);
-        model = new Model(100.0, 2.0, 3.0);
-        MarketOrder marketOrder = new MarketOrder(Symbol.XBTUSD, OrderSide.Buy, 200.0, ExecutionInstructions.Close);
-        LimitOrder limitOrder = new LimitOrder(Symbol.XBTUSD,OrderSide.Buy, 200.0, 17122.0, ExecutionInstructions.Close);
 
+//        LimitOrder limitOrder = new LimitOrder(Symbol.XBTUSD, OrderSide.Buy, Model.getCoef(), 17122.0, null);
 //        HttpResponse<String> httpResponse = bitmexClient.sendOrder(limitOrder);
-//        System.out.println(httpResponse.body());
-//
-//            HttpResponse<String> httpResponse = bitmexClient.sendOrder(marketOrder);
-//            httpResponse.body();
+//        httpResponse.body();
 
-//        HttpResponse<String> response = bitmexClient.getPosition();
-//        System.out.println(response.body());
+        currentMarketPrice(bitmexClient);
+
+
     }
+
+    private static void currentMarketPrice(BitmexClient bitmexClient) {
+        HttpResponse<String> response = bitmexClient.getInstrumentPrice();
+        String jsonString = response.body();
+
+        Gson gson = new Gson();
+        Instrument inst = new Instrument();
+        Instrument[] instrument = gson.fromJson(jsonString, Instrument[].class);
+        System.out.println("\n" + instrument[0]);
+        inst.setLastPrice(instrument[0].getLastPrice());
+        currentPrice = inst.getLastPrice();
+        System.out.println("\n" + "current price=" + currentPrice);
+    }
+
 
 //    private static void testQuery() {
 //        String baseUrl = "https://testnet.bitmex.com";
