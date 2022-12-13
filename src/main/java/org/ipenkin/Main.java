@@ -3,28 +3,42 @@ package org.ipenkin;
 import com.google.gson.*;
 import org.ipenkin.framework.BitmexClient;
 import org.ipenkin.framework.Instrument;
+import org.ipenkin.framework.constants.OrderSide;
+import org.ipenkin.framework.constants.Symbol;
+import org.ipenkin.framework.order.LimitOrder;
+import org.ipenkin.framework.order.Order;
 import org.ipenkin.model.Model;
 
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 
 @SuppressWarnings("InstantiationOfUtilityClass")
 public class Main {
     private static Model model;
     private static Double currentPrice;
+    private static Double entryPrice;
+    private static List<LimitOrder> limitOrders;
 
     public static void main(String[] args) {
-        model = new Model(200.0, 3, 100.0);
+        limitOrders = new ArrayList<>();
+        model = new Model(100.0, 5, 100.0);
         BitmexClient bitmexClient = new BitmexClient(Model.getApiKey(), Model.getApiSecret(), true);
-
-//        LimitOrder limitOrder = new LimitOrder(Symbol.XBTUSD, OrderSide.Buy, Model.getCoef(), 17122.0, null);
-//        HttpResponse<String> httpResponse = bitmexClient.sendOrder(limitOrder);
-//        httpResponse.body();
-
         currentMarketPrice(bitmexClient);
+        entryPrice = currentPrice - Model.getStep();
 
+        for (int i = 0; i < Model.getLevel(); i++) {
+            limitOrders.add(new LimitOrder(Symbol.XBTUSD, OrderSide.Buy, Model.getCoef(), entryPrice, null));
 
+            entryPrice = entryPrice - Model.getStep();
+            System.out.println(entryPrice);
+            HttpResponse<String> httpResponse = bitmexClient.sendOrder(limitOrders.get(i));
+            httpResponse.body();
+        }
+
+        // LimitOrder limitOrder = new LimitOrder(Symbol.XBTUSD, OrderSide.Buy, Model.getCoef(), entryPrice, null);
     }
 
     private static void currentMarketPrice(BitmexClient bitmexClient) {

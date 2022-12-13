@@ -20,11 +20,7 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
-      <dependency>
-          <groupId>javax.annotation</groupId>
-          <artifactId>jsr250-api</artifactId>
-          <version>1.3.5</version>
-      </dependency>
+
   </dependencies>
   <build>
     <finalName>BitmexBot</finalName>
