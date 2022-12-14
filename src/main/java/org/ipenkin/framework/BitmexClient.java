@@ -73,10 +73,7 @@ public class BitmexClient {
 
         String expires = createExpires();
         String signature = createSignature(url, Verb.POST.toString(), orderToJson, expires);
-        while (signature.length() != 64) {
-            expires = createExpires();
-            signature = createSignature(url, Verb.POST.toString(), orderToJson, expires);
-        }
+
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .POST(HttpRequest.BodyPublishers.ofString(orderToJson))
                 .header("api-signature", signature)
@@ -101,7 +98,7 @@ public class BitmexClient {
                 .net(getNet())
                 .baseUrl(UtilURL.BASE_URL)
                 .apiPath(UtilURL.API_PATH)
-                .resourcePath(ResourceURL.INSTRUMENT)
+                .resourcePath(ResourceURL.ORDERBOOK)
                 .build();
         String data = "";
         String expires = createExpires();
