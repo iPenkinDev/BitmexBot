@@ -28,24 +28,24 @@ public class Main {
     private static List<LimitOrder> limitOrders;
 
     public static void main(String[] args) {
-//        limitOrders = new ArrayList<>();
-//        model = new Model(Model.getApiKey(), Model.getApiSecret(), 100.0, 2, 300.0);
-//        BitmexClient bitmexClient = new BitmexClient(Model.getApiKey(), Model.getApiSecret(), true);
-//        currentMarketPrice(bitmexClient);
-//        entryPrice = currentPrice - Model.getStep();
-//
-//        for (int i = 0; i < Model.getLevel(); i++) {
-//            System.out.println("entry price=" + entryPrice);
-//            limitOrders.add(new LimitOrder(Symbol.XBTUSD, OrderSide.Buy, Model.getCoef(), entryPrice, null));
-//
-//            entryPrice = entryPrice - Model.getStep();
-//            HttpResponse<String> httpResponse = bitmexClient.sendOrder(limitOrders.get(i));
-//            httpResponse.body();
-//
-//        }
-//
-//
-//        orderPosition(bitmexClient);
+        limitOrders = new ArrayList<>();
+        model = new Model(Model.getApiKey(), Model.getApiSecret(), 100.0, 2, 300.0);
+        BitmexClient bitmexClient = new BitmexClient(Model.getApiKey(), Model.getApiSecret(), true);
+        currentMarketPrice(bitmexClient);
+        entryPrice = currentPrice - Model.getStep();
+
+        for (int i = 0; i < Model.getLevel(); i++) {
+            System.out.println("entry price=" + entryPrice);
+            limitOrders.add(new LimitOrder(Symbol.XBTUSD, OrderSide.Buy, Model.getCoef(), entryPrice, null));
+
+            entryPrice = entryPrice - Model.getStep();
+            HttpResponse<String> httpResponse = bitmexClient.sendOrder(limitOrders.get(i));
+            httpResponse.body();
+
+        }
+
+
+        orderPosition(bitmexClient);
 
         WebSocket webSocket = new WebSocket(UtilURL.createWebsocketURL());
         webSocket.connect();
@@ -56,10 +56,13 @@ public class Main {
 
         webSocket.sendMessage("{\"op\": \"authKeyExpires\", \"args\": [\"" + Model.getApiKey() + "\", " + expires + ", \"" + signature + "\"]}");
         webSocket.sendMessage("{\"op\": \"subscribe\", \"args\": [\"order\"]}");
-        int count = 0;
+
+        StringBuilder stringBuilder = new StringBuilder();
         while (true) {
-            System.out.println(webSocket.getOutput());
-            count++;
+            if (!stringBuilder.equals(webSocket.getOutput())) {
+                stringBuilder.replace(0, stringBuilder.length(), webSocket.getOutput().toString());
+                System.out.println(webSocket.getOutput());
+            }
         }
 
 

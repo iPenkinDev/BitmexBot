@@ -32,7 +32,7 @@ public class WebSocket extends Endpoint {
         session.addMessageHandler(new MessageHandler.Whole<String>() {
             @Override
             public void onMessage(String message) {
-                output.replace(0, message.length(), message);
+                output.replace(0, output.length(), message);
             }
         });
 
