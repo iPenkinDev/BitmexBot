@@ -7,7 +7,9 @@ public class Model {
     private static int level;
     private static double coef;
 
-    public Model(Double step, Integer level, Double coef) {
+    public Model(String apiKey, String apiSecret, Double step, Integer level, Double coef) {
+        this.apiKey = apiKey;
+        this.apiSecret = apiSecret;
         this.step = step;
         this.level = level;
         this.coef = coef;

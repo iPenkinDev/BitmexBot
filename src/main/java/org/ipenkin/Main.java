@@ -1,15 +1,22 @@
 package org.ipenkin;
 
 import com.google.gson.Gson;
+import org.ipenkin.authentication.HMAC;
+import org.ipenkin.authentication.Signature;
 import org.ipenkin.framework.BitmexClient;
 import org.ipenkin.framework.CurrentPrice;
 import org.ipenkin.framework.OrderPosition;
+import org.ipenkin.framework.WebSocket;
 import org.ipenkin.framework.constants.OrderSide;
 import org.ipenkin.framework.constants.Symbol;
+import org.ipenkin.framework.constants.URL.UtilURL;
+import org.ipenkin.framework.constants.Verb;
 import org.ipenkin.framework.order.LimitOrder;
 import org.ipenkin.model.Model;
 
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,30 +28,43 @@ public class Main {
     private static List<LimitOrder> limitOrders;
 
     public static void main(String[] args) {
-        limitOrders = new ArrayList<>();
-        model = new Model(300.0, 2, 200.0);
-        BitmexClient bitmexClient = new BitmexClient(Model.getApiKey(), Model.getApiSecret(), true);
-        currentMarketPrice(bitmexClient);
-        entryPrice = currentPrice - Model.getStep();
+//        limitOrders = new ArrayList<>();
+//        model = new Model(Model.getApiKey(), Model.getApiSecret(), 100.0, 2, 300.0);
+//        BitmexClient bitmexClient = new BitmexClient(Model.getApiKey(), Model.getApiSecret(), true);
+//        currentMarketPrice(bitmexClient);
+//        entryPrice = currentPrice - Model.getStep();
+//
+//        for (int i = 0; i < Model.getLevel(); i++) {
+//            System.out.println("entry price=" + entryPrice);
+//            limitOrders.add(new LimitOrder(Symbol.XBTUSD, OrderSide.Buy, Model.getCoef(), entryPrice, null));
+//
+//            entryPrice = entryPrice - Model.getStep();
+//            HttpResponse<String> httpResponse = bitmexClient.sendOrder(limitOrders.get(i));
+//            httpResponse.body();
+//
+//        }
+//
+//
+//        orderPosition(bitmexClient);
 
-        for (int i = 0; i < Model.getLevel(); i++) {
-            System.out.println("entry price=" + entryPrice);
-            limitOrders.add(new LimitOrder(Symbol.XBTUSD, OrderSide.Buy, Model.getCoef(), entryPrice, null));
+        WebSocket webSocket = new WebSocket(UtilURL.createWebsocketURL());
+        webSocket.connect();
 
-            entryPrice = entryPrice - Model.getStep();
-            HttpResponse<String> httpResponse = bitmexClient.sendOrder(limitOrders.get(i));
-            httpResponse.body();
+        String expires = String.valueOf(Instant.now().getEpochSecond() + 10);
+        String signature = Signature.signatureToString(HMAC.calcHmacSha256(Model.getApiSecret().getBytes(StandardCharsets.UTF_8),
+                (Verb.GET + UtilURL.REALTIME + expires).getBytes(StandardCharsets.UTF_8)));
 
+        webSocket.sendMessage("{\"op\": \"authKeyExpires\", \"args\": [\"" + Model.getApiKey() + "\", " + expires + ", \"" + signature + "\"]}");
+        webSocket.sendMessage("{\"op\": \"subscribe\", \"args\": [\"order\"]}");
+        int count = 0;
+        while (true) {
+            System.out.println(webSocket.getOutput());
+            count++;
         }
 
 
-        orderPosition(bitmexClient);
-
-
-
-
-        // LimitOrder limitOrder = new LimitOrder(Symbol.XBTUSD, OrderSide.Buy, Model.getCoef(), entryPrice, null);
     }
+
 
     private static void currentMarketPrice(BitmexClient bitmexClient) {
         HttpResponse<String> response = bitmexClient.getInstrumentPrice();

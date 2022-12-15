@@ -4,7 +4,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 public class HMAC {
-    public byte[] calcHmacSha256(byte[] secretKey, byte[] message) {
+    public static byte[] calcHmacSha256(byte[] secretKey, byte[] message) {
         byte[] hmacSha256;
         try {
             Mac mac = Mac.getInstance("HmacSHA256");
