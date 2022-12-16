@@ -43,10 +43,12 @@ public class Main {
             httpResponse.body();
 
         }
-
-
         orderPosition(bitmexClient);
 
+        doConnect();
+    }
+
+    private static void doConnect() {
         WebSocket webSocket = new WebSocket(UtilURL.createWebsocketURL());
         webSocket.connect();
 
@@ -57,15 +59,15 @@ public class Main {
         webSocket.sendMessage("{\"op\": \"authKeyExpires\", \"args\": [\"" + Model.getApiKey() + "\", " + expires + ", \"" + signature + "\"]}");
         webSocket.sendMessage("{\"op\": \"subscribe\", \"args\": [\"order\"]}");
 
-        StringBuilder stringBuilder = new StringBuilder();
+        String previousX = "";
         while (true) {
-            if (!stringBuilder.equals(webSocket.getOutput())) {
-                stringBuilder.replace(0, stringBuilder.length(), webSocket.getOutput().toString());
-                System.out.println(webSocket.getOutput());
+            String x = webSocket.getOutput().toString();
+
+            if (!x.equals(previousX)) {
+                System.out.println(x);
             }
+            previousX = x;
         }
-
-
     }
 
 
@@ -85,11 +87,11 @@ public class Main {
     private static void orderPosition(BitmexClient bitmexClient) {
         HttpResponse<String> responseGetPosition = bitmexClient.getPosition();
         String jsonString = responseGetPosition.body();
-        System.out.println(jsonString);
+       // System.out.println(jsonString);
         Gson gson = new Gson();
         OrderPosition position = new OrderPosition();
         OrderPosition[] pos = gson.fromJson(jsonString, OrderPosition[].class);
-        System.out.println("\n" + pos[0]);
+        //System.out.println("\n" + pos[0]);
 
     }
 
