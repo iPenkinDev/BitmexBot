@@ -3,10 +3,7 @@ package org.ipenkin;
 import com.google.gson.Gson;
 import org.ipenkin.authentication.HMAC;
 import org.ipenkin.authentication.Signature;
-import org.ipenkin.framework.BitmexClient;
-import org.ipenkin.framework.CurrentPrice;
-import org.ipenkin.framework.OrderPosition;
-import org.ipenkin.framework.WebSocket;
+import org.ipenkin.framework.*;
 import org.ipenkin.framework.constants.OrderSide;
 import org.ipenkin.framework.constants.Symbol;
 import org.ipenkin.framework.constants.URL.UtilURL;
@@ -14,6 +11,8 @@ import org.ipenkin.framework.constants.Verb;
 import org.ipenkin.framework.order.LimitOrder;
 import org.ipenkin.model.Model;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
@@ -45,7 +44,12 @@ public class Main {
         }
         orderPosition(bitmexClient);
 
-        doConnect();
+        try {
+            NewWebSocket newWebSocket = new NewWebSocket(new URI(UtilURL.createWebsocketURL()));
+            newWebSocket.connect();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static void doConnect() {
@@ -61,12 +65,12 @@ public class Main {
 
         String previousX = "";
         while (true) {
-            String x = webSocket.getOutput().toString();
+            String response = webSocket.getOutput().toString();
 
-            if (!x.equals(previousX)) {
-                System.out.println(x);
+            if (!response.equals(previousX)) {
+                System.out.println(response);
             }
-            previousX = x;
+            previousX = response;
         }
     }
 
@@ -87,7 +91,7 @@ public class Main {
     private static void orderPosition(BitmexClient bitmexClient) {
         HttpResponse<String> responseGetPosition = bitmexClient.getPosition();
         String jsonString = responseGetPosition.body();
-       // System.out.println(jsonString);
+        // System.out.println(jsonString);
         Gson gson = new Gson();
         OrderPosition position = new OrderPosition();
         OrderPosition[] pos = gson.fromJson(jsonString, OrderPosition[].class);
