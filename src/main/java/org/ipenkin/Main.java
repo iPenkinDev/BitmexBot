@@ -1,21 +1,19 @@
 package org.ipenkin;
 
 import com.google.gson.Gson;
-import org.ipenkin.authentication.HMAC;
-import org.ipenkin.authentication.Signature;
-import org.ipenkin.framework.*;
+import org.ipenkin.framework.BitmexClient;
+import org.ipenkin.framework.CurrentPrice;
+import org.ipenkin.framework.WebSocket;
+import org.ipenkin.framework.OrderPosition;
 import org.ipenkin.framework.constants.OrderSide;
 import org.ipenkin.framework.constants.Symbol;
 import org.ipenkin.framework.constants.URL.UtilURL;
-import org.ipenkin.framework.constants.Verb;
 import org.ipenkin.framework.order.LimitOrder;
 import org.ipenkin.model.Model;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +26,7 @@ public class Main {
 
     public static void main(String[] args) {
         limitOrders = new ArrayList<>();
-        model = new Model(Model.getApiKey(), Model.getApiSecret(), 100.0, 2, 300.0);
+        model = new Model(Model.getApiKey(), Model.getApiSecret(), 100.0, 3, 10.0);
         BitmexClient bitmexClient = new BitmexClient(Model.getApiKey(), Model.getApiSecret(), true);
         currentMarketPrice(bitmexClient);
         entryPrice = currentPrice - Model.getStep();
@@ -45,33 +43,14 @@ public class Main {
         orderPosition(bitmexClient);
 
         try {
-            NewWebSocket newWebSocket = new NewWebSocket(new URI(UtilURL.createWebsocketURL()));
+            WebSocket newWebSocket = new WebSocket(new URI(UtilURL.createWebsocketURL()));
             newWebSocket.connect();
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
-    }
 
-    private static void doConnect() {
-        WebSocket webSocket = new WebSocket(UtilURL.createWebsocketURL());
-        webSocket.connect();
 
-        String expires = String.valueOf(Instant.now().getEpochSecond() + 10);
-        String signature = Signature.signatureToString(HMAC.calcHmacSha256(Model.getApiSecret().getBytes(StandardCharsets.UTF_8),
-                (Verb.GET + UtilURL.REALTIME + expires).getBytes(StandardCharsets.UTF_8)));
 
-        webSocket.sendMessage("{\"op\": \"authKeyExpires\", \"args\": [\"" + Model.getApiKey() + "\", " + expires + ", \"" + signature + "\"]}");
-        webSocket.sendMessage("{\"op\": \"subscribe\", \"args\": [\"order\"]}");
-
-        String previousX = "";
-        while (true) {
-            String response = webSocket.getOutput().toString();
-
-            if (!response.equals(previousX)) {
-                System.out.println(response);
-            }
-            previousX = response;
-        }
     }
 
 
@@ -98,36 +77,4 @@ public class Main {
         //System.out.println("\n" + pos[0]);
 
     }
-
-
-//    private static void testQuery() {
-//        String baseUrl = "https://testnet.bitmex.com";
-//        String apiKey = "6zP3XL1ssGDrlU74dyJxKhFf";
-//        String apiSecret = "kuK2CWx5RsLI68b4DZLnIX16XyqTupwFc3jTe8IWjmr0JN0E";
-//        String verb = "GET";
-//        String path = "/api/v1/user/wallet";
-//        String expires = String.valueOf(Instant.now().getEpochSecond() + 100);
-//        String data = "";
-//
-//        Signature signature = new Signature();
-//        String signatureStr = signature.signatureToString(signature.createSignature(verb, path, data, expires, apiSecret));
-//
-//        HttpClient client = HttpClient.newBuilder().build();
-//
-//        HttpRequest request = HttpRequest.newBuilder()
-//                .header("api-expires", expires)
-//                .header("api-key", apiKey)
-//                .header("api-signature", signatureStr)
-//                .uri(URI.create(baseUrl + path))
-//                .GET()
-//                .build();
-//
-//        try {
-//            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-//            System.out.println(response.body());
-//
-//        } catch (IOException | InterruptedException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
 }

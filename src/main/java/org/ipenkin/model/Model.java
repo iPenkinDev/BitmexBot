@@ -1,8 +1,8 @@
 package org.ipenkin.model;
 
 public class Model {
-    private static String apiKey = "6zP3XL1ssGDrlU74dyJxKhFf";
-    private static String apiSecret = "kuK2CWx5RsLI68b4DZLnIX16XyqTupwFc3jTe8IWjmr0JN0E";
+    private static String apiKey = "SSijwr_9yp84o8Juy8Cm644T";
+    private static String apiSecret = "iKwTxNOlzS6iITCdEPHfGx8SQW4HK9_Dfvnl3NUwuBf12n48";
     private static double step;
     private static int level;
     private static double coef;

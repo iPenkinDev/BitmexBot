@@ -1,56 +1,62 @@
 package org.ipenkin.framework;
 
-import javax.websocket.*;
-import java.io.IOException;
+import com.google.gson.Gson;
+import org.ipenkin.authentication.HMAC;
+import org.ipenkin.authentication.Signature;
+import org.ipenkin.framework.constants.URL.UtilURL;
+import org.ipenkin.framework.constants.Verb;
+import org.ipenkin.model.Model;
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
+
 import java.net.URI;
-import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 
-public class WebSocket extends Endpoint {
+public class WebSocket extends WebSocketClient {
 
-    private String url;
-    private StringBuilder output;
-    private Session session;
+    private Gson gson = new Gson();
 
-    public WebSocket(String url) {
-        super();
-        this.url = url;
-        this.output = new StringBuilder();
+
+    public WebSocket(URI serverURI) {
+        super(serverURI);
     }
 
-    public StringBuilder getOutput() {
-        return output;
-    }
+    String expires = String.valueOf(Instant.now().getEpochSecond() + 10);
+    String signature = Signature.signatureToString(HMAC.calcHmacSha256(Model.getApiSecret().getBytes(StandardCharsets.UTF_8),
+            (Verb.GET + UtilURL.REALTIME + expires).getBytes(StandardCharsets.UTF_8)));
 
-    public void sendMessage(String message) {
-        session.getAsyncRemote().sendText(message);
+
+    @Override
+    public void onOpen(ServerHandshake handshakedata) {
+        send("{\"op\": \"authKeyExpires\", \"args\": [\"" + Model.getApiKey() + "\", " + expires + ", \"" + signature + "\"]}");
+        send("{\"op\": \"subscribe\", \"args\": [\"order\"]}");
+        System.out.println("opened connection");
+        // if you plan to refuse connection based on ip or httpfields overload: onWebsocketHandshakeReceivedAsClient
     }
 
     @Override
-    public void onOpen(Session session, EndpointConfig endpointConfig) {
-        this.session = session;
-
-        session.addMessageHandler(new MessageHandler.Whole<String>() {
-            @Override
-            public void onMessage(String message) {
-                output.replace(0, output.length(), message);
-            }
-        });
-
+    public void onMessage(String message) {
+        System.out.println("received: " + message);
+        gson.fromJson(message, OrderPosition.class);
+        OrderPosition orderPosition = new OrderPosition();
+        System.out.println(orderPosition);
     }
 
-    public void connect() {
-        WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-        ClientEndpointConfig config = ClientEndpointConfig.Builder.create()
-                .configurator(new ClientEndpointConfig.Configurator())
-                .build();
-        try {
-            container.connectToServer(this, config, new URI(url));
-        } catch (DeploymentException | IOException | URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+
+    @Override
+    public void onClose(int code, String reason, boolean remote) {
+        // The close codes are documented in class org.java_websocket.framing.CloseFrame
+        System.out.println(
+                "Connection closed by " + (remote ? "remote peer" : "us") + " Code: " + code + " Reason: "
+                        + reason);
     }
 
-    public void onError(Session session, Throwable throwable) {
-        super.onError(session, throwable);
+    @Override
+    public void onError(Exception ex) {
+        ex.printStackTrace();
+        // if the error is fatal then onClose will be called additionally
     }
+
+
 }

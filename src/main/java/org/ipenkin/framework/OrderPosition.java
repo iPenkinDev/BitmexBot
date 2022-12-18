@@ -1,8 +1,17 @@
 package org.ipenkin.framework;
 
 public class OrderPosition {
+    private String orderID;
     private Integer currentQty;
     private Integer avgEntryPrice;
+
+    public String getOrderID() {
+        return orderID;
+    }
+
+    public void setOrderID(String orderID) {
+        this.orderID = orderID;
+    }
 
     public Integer getCurrentQty() {
         return currentQty;
@@ -23,7 +32,8 @@ public class OrderPosition {
     @Override
     public String toString() {
         return "OrderPosition{" +
-                "currentQty=" + currentQty +
+                "orderID='" + orderID + '\'' +
+                ", currentQty=" + currentQty +
                 ", avgEntryPrice=" + avgEntryPrice +
                 '}';
     }
