@@ -70,7 +70,7 @@ public class Main {
     private static void orderPosition(BitmexClient bitmexClient) {
         HttpResponse<String> responseGetPosition = bitmexClient.getPosition();
         String jsonString = responseGetPosition.body();
-        // System.out.println(jsonString);
+        System.out.println(jsonString);
         Gson gson = new Gson();
         OrderPosition position = new OrderPosition();
         OrderPosition[] pos = gson.fromJson(jsonString, OrderPosition[].class);
