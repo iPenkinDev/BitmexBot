@@ -64,7 +64,7 @@ public class Main {
         System.out.println("\n" + price[1]);
         inst.setPrice(price[1].getPrice());
         currentPrice = inst.getPrice();
-        //System.out.println("\n" + "current price=" + currentPrice);
+        System.out.println("\n" + "current price=" + currentPrice);
     }
 
     private static void orderPosition(BitmexClient bitmexClient) {
