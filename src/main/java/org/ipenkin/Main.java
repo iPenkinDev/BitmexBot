@@ -74,7 +74,7 @@ public class Main {
         Gson gson = new Gson();
         OrderPosition position = new OrderPosition();
         OrderPosition[] pos = gson.fromJson(jsonString, OrderPosition[].class);
-        //System.out.println("\n" + pos[0]);
+        System.out.println("\n" + pos[0]);
 
     }
 }
