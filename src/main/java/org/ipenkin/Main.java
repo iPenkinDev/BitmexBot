@@ -3,8 +3,8 @@ package org.ipenkin;
 import com.google.gson.Gson;
 import org.ipenkin.framework.BitmexClient;
 import org.ipenkin.framework.CurrentPrice;
+import org.ipenkin.framework.Pojo;
 import org.ipenkin.framework.WebSocket;
-import org.ipenkin.framework.OrderPosition;
 import org.ipenkin.framework.constants.OrderSide;
 import org.ipenkin.framework.constants.Symbol;
 import org.ipenkin.framework.constants.URL.UtilURL;
@@ -26,7 +26,7 @@ public class Main {
 
     public static void main(String[] args) {
         limitOrders = new ArrayList<>();
-        model = new Model(Model.getApiKey(), Model.getApiSecret(), 100.0, 3, 10.0);
+        model = new Model(Model.getApiKey(), Model.getApiSecret(), 1.0, 3, 100.0);
         BitmexClient bitmexClient = new BitmexClient(Model.getApiKey(), Model.getApiSecret(), true);
         currentMarketPrice(bitmexClient);
         entryPrice = currentPrice - Model.getStep();
@@ -37,10 +37,10 @@ public class Main {
 
             entryPrice = entryPrice - Model.getStep();
             HttpResponse<String> httpResponse = bitmexClient.sendOrder(limitOrders.get(i));
-            httpResponse.body();
+            System.out.println(httpResponse.body());
 
         }
-        orderPosition(bitmexClient);
+        //orderPosition(bitmexClient);
 
         try {
             WebSocket newWebSocket = new WebSocket(new URI(UtilURL.createWebsocketURL()));
@@ -69,9 +69,11 @@ public class Main {
         String jsonString = responseGetPosition.body();
         System.out.println(jsonString);
         Gson gson = new Gson();
-        OrderPosition position = new OrderPosition();
-        OrderPosition[] pos = gson.fromJson(jsonString, OrderPosition[].class);
+        Pojo position = new Pojo();
+        Pojo[] pos = gson.fromJson(jsonString, Pojo[].class);
+        System.out.println("Size pos array=" + pos.length);
         System.out.println("\n" + pos[0]);
+
 
     }
 }

@@ -38,9 +38,10 @@ public class WebSocket extends WebSocketClient {
     @Override
     public void onMessage(String message) {
         System.out.println("received: " + message);
-        gson.fromJson(message, OrderPosition.class);
-        OrderPosition orderPosition = new OrderPosition();
-        System.out.println(orderPosition);
+        Pojo pojo = gson.fromJson(message, Pojo.class);
+        System.out.println("-------------------------------------------------");;
+        System.out.println(pojo);
+
     }
 
 
