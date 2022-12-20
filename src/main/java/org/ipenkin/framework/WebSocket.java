@@ -15,7 +15,7 @@ import java.time.Instant;
 
 public class WebSocket extends WebSocketClient {
 
-    private Gson gson = new Gson();
+    private static Gson gson = new Gson();
 
 
     public WebSocket(URI serverURI) {
@@ -39,8 +39,14 @@ public class WebSocket extends WebSocketClient {
     public void onMessage(String message) {
         System.out.println("received: " + message);
         Pojo pojo = gson.fromJson(message, Pojo.class);
-        System.out.println("-------------------------------------------------");;
-        System.out.println(pojo);
+        System.out.println("-------------------------------------------------");
+        System.out.println("pojo=" + pojo);
+        //get Data field from Pojo
+        for (Pojo.Data data : pojo.getData()) {
+            System.out.println("avgPx=" + data.getAvgPx());
+        }
+        System.out.println(pojo.getData());
+
 
     }
 
