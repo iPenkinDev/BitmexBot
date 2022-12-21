@@ -41,7 +41,6 @@ public class WebSocket extends WebSocketClient {
         Pojo pojo = gson.fromJson(message, Pojo.class);
         System.out.println("-------------------------------------------------");
         System.out.println("pojo=" + pojo);
-        //get Data field from Pojo
         for (Pojo.Data data : pojo.getData()) {
             System.out.println("avgPx=" + data.getAvgPx());
         }
