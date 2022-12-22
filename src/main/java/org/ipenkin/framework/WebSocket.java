@@ -41,18 +41,16 @@ public class WebSocket extends WebSocketClient {
         Pojo pojo = gson.fromJson(message, Pojo.class);
         System.out.println("-------------------------------------------------");
         System.out.println("pojo=" + pojo);
-        for (Pojo.Data data : pojo.getData()) {
-            System.out.println("avgPx=" + data.getAvgPx());
+        if (pojo.getData() != null) {
+            for (Pojo.Data data : pojo.getData()) {
+                System.out.println("avgPx=" + data.getAvgPx());
+            }
+            System.out.println(pojo.getData());
         }
-        System.out.println(pojo.getData());
-
-
     }
-
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        // The close codes are documented in class org.java_websocket.framing.CloseFrame
         System.out.println(
                 "Connection closed by " + (remote ? "remote peer" : "us") + " Code: " + code + " Reason: "
                         + reason);

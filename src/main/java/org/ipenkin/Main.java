@@ -40,7 +40,7 @@ public class Main {
             System.out.println(httpResponse.body());
 
         }
-        //orderPosition(bitmexClient);
+        orderPosition(bitmexClient);
 
         try {
             WebSocket newWebSocket = new WebSocket(new URI(UtilURL.createWebsocketURL()));
