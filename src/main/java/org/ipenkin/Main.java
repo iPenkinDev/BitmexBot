@@ -22,6 +22,7 @@ public class Main {
     private static Model model;
     private static Double currentPrice;
     private static Double entryPrice;
+
     private static List<LimitOrder> limitOrders;
 
     public static void main(String[] args) {

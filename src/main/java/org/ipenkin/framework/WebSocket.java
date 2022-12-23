@@ -3,19 +3,24 @@ package org.ipenkin.framework;
 import com.google.gson.Gson;
 import org.ipenkin.authentication.HMAC;
 import org.ipenkin.authentication.Signature;
+import org.ipenkin.framework.constants.OrderSide;
+import org.ipenkin.framework.constants.Symbol;
 import org.ipenkin.framework.constants.URL.UtilURL;
 import org.ipenkin.framework.constants.Verb;
+import org.ipenkin.framework.order.LimitOrder;
 import org.ipenkin.model.Model;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URI;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 
 public class WebSocket extends WebSocketClient {
 
     private static Gson gson = new Gson();
+    private static Double entryPriceAfterReOrder;
 
 
     public WebSocket(URI serverURI) {
@@ -43,9 +48,34 @@ public class WebSocket extends WebSocketClient {
         System.out.println("pojo=" + pojo);
         if (pojo.getData() != null) {
             for (Pojo.Data data : pojo.getData()) {
+                System.out.println("-------------------------------------------------");
+                System.out.println("data=" + data + "\n");
+                System.out.println("orderID=" + data.getOrderID());
+                System.out.println("side=" + data.getSide());
+                System.out.println("orderStatus=" + data.getOrderStatus());
                 System.out.println("avgPx=" + data.getAvgPx());
+                System.out.println("-------------------------------------------------");
+
+                if (data.getAvgPx() != null && data.getSide().equals("Buy")) {
+                    entryPriceAfterReOrder = data.getAvgPx() + Model.getStep();
+                    System.out.println("order selled");
+                    System.out.println("entryPriceAfterReOrder=" + entryPriceAfterReOrder);
+                    //create http request
+                    LimitOrder limitOrder = new LimitOrder(Symbol.XBTUSD, OrderSide.Sell, Model.getCoef(), entryPriceAfterReOrder, null);
+                    HttpResponse<String> response = new BitmexClient(Model.getApiKey(), Model.getApiSecret(), true)
+                            .sendOrder(limitOrder);
+                    System.out.println(response.body());
+                }
+                if (data.getAvgPx()!=null && data.getOrderStatus().equals("Filled")) {
+                    entryPriceAfterReOrder = data.getAvgPx() + Model.getStep();
+                    System.out.println("order buyed");
+                    System.out.println("entryPriceAfterReOrder=" + entryPriceAfterReOrder);
+                    LimitOrder limitOrder = new LimitOrder(Symbol.XBTUSD, OrderSide.Buy, Model.getCoef(), entryPriceAfterReOrder, null);
+                    HttpResponse<String> httpResponse = new BitmexClient(Model.getApiKey(), Model.getApiSecret(), true)
+                            .sendOrder(limitOrder);
+                    System.out.println(httpResponse.body());
+                }
             }
-            System.out.println(pojo.getData());
         }
     }
 

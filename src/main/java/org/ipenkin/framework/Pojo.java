@@ -22,16 +22,26 @@ public class Pojo {
 
     class Data {
         private String orderID;
-        private Double orderQty;
+        private String side;
+        private String orderStatus;
         private Double avgPx;
 
         @Override
         public String toString() {
             return "Data{" +
-                    "orderID='" + getOrderID() + '\'' +
-                    ", orderQty=" + getOrderQty() +
-                    ", avgPx=" + getAvgPx() +
+                    "orderID='" + orderID + '\'' +
+                    ", side='" + side + '\'' +
+                    ", orderStatus='" + orderStatus + '\'' +
+                    ", avgPx=" + avgPx +
                     '}';
+        }
+
+        public String getOrderStatus() {
+            return orderStatus;
+        }
+
+        public void setOrderStatus(String orderStatus) {
+            this.orderStatus = orderStatus;
         }
 
         public String getOrderID() {
@@ -42,12 +52,12 @@ public class Pojo {
             this.orderID = orderID;
         }
 
-        public Double getOrderQty() {
-            return orderQty;
+        public String getSide() {
+            return side;
         }
 
-        public void setOrderQty(Double orderQty) {
-            this.orderQty = orderQty;
+        public void setSide(String side) {
+            this.side = side;
         }
 
         public Double getAvgPx() {
