@@ -23,7 +23,7 @@ public class Pojo {
     class Data {
         private String orderID;
         private String side;
-        private String orderStatus;
+        private String ordStatus;
         private Double avgPx;
 
         @Override
@@ -31,17 +31,17 @@ public class Pojo {
             return "Data{" +
                     "orderID='" + orderID + '\'' +
                     ", side='" + side + '\'' +
-                    ", orderStatus='" + orderStatus + '\'' +
+                    ", ordStatus='" + ordStatus + '\'' +
                     ", avgPx=" + avgPx +
                     '}';
         }
 
-        public String getOrderStatus() {
-            return orderStatus;
+        public String getOrdStatus() {
+            return ordStatus;
         }
 
-        public void setOrderStatus(String orderStatus) {
-            this.orderStatus = orderStatus;
+        public void setOrdStatus(String ordStatus) {
+            this.ordStatus = ordStatus;
         }
 
         public String getOrderID() {

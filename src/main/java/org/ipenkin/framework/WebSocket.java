@@ -52,21 +52,21 @@ public class WebSocket extends WebSocketClient {
                 System.out.println("data=" + data + "\n");
                 System.out.println("orderID=" + data.getOrderID());
                 System.out.println("side=" + data.getSide());
-                System.out.println("orderStatus=" + data.getOrderStatus());
+                System.out.println("orderStatus=" + data.getOrdStatus());
                 System.out.println("avgPx=" + data.getAvgPx());
                 System.out.println("-------------------------------------------------");
 
-                if (data.getAvgPx() != null && data.getSide().equals("Buy")) {
+
+                if (data.getAvgPx() != null && data.getSide() != null && data.getSide().equals("Buy") && data.getOrdStatus().equals("Filled")) {
                     entryPriceAfterReOrder = data.getAvgPx() + Model.getStep();
                     System.out.println("order selled");
                     System.out.println("entryPriceAfterReOrder=" + entryPriceAfterReOrder);
-                    //create http request
                     LimitOrder limitOrder = new LimitOrder(Symbol.XBTUSD, OrderSide.Sell, Model.getCoef(), entryPriceAfterReOrder, null);
                     HttpResponse<String> response = new BitmexClient(Model.getApiKey(), Model.getApiSecret(), true)
                             .sendOrder(limitOrder);
                     System.out.println(response.body());
                 }
-                if (data.getAvgPx()!=null && data.getOrderStatus().equals("Filled")) {
+                if (data.getAvgPx() != null && data.getSide() != null && data.getSide().equals("Sell") && data.getOrdStatus().equals("Filled")) {
                     entryPriceAfterReOrder = data.getAvgPx() + Model.getStep();
                     System.out.println("order buyed");
                     System.out.println("entryPriceAfterReOrder=" + entryPriceAfterReOrder);
@@ -75,6 +75,8 @@ public class WebSocket extends WebSocketClient {
                             .sendOrder(limitOrder);
                     System.out.println(httpResponse.body());
                 }
+
+
             }
         }
     }
