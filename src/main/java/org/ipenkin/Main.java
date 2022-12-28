@@ -19,41 +19,57 @@ import java.util.List;
 
 @SuppressWarnings("InstantiationOfUtilityClass")
 public class Main {
-    private static Model model;
-    private static Double currentPrice;
-    private static Double entryPrice;
+    private Double currentPrice;
+    private Double entryPrice;
 
-    private static List<LimitOrder> limitOrders;
+    private List<LimitOrder> limitOrders;
 
     public static void main(String[] args) {
+        new Main().run();
+    }
+
+    private void run() {
         limitOrders = new ArrayList<>();
-        model = new Model(Model.getApiKey(), Model.getApiSecret(), 1.0, 3, 100.0);
-        BitmexClient bitmexClient = new BitmexClient(Model.getApiKey(), Model.getApiSecret(), true);
+        Model model = new Model("SSijwr_9yp84o8Juy8Cm644T", "iKwTxNOlzS6iITCdEPHfGx8SQW4HK9_Dfvnl3NUwuBf12n48", 1.0, 3, 100.0);
+
+        BitmexClient bitmexClient = new BitmexClient(model.getApiKey(), model.getApiSecret(), true);
         currentMarketPrice(bitmexClient);
-        entryPrice = currentPrice - Model.getStep();
+        entryPrice = currentPrice - model.getStep();
 
-        for (int i = 0; i < Model.getLevel(); i++) {
+        for (int i = 0; i < model.getLevel(); i++) {
             System.out.println("entry price=" + entryPrice);
-            limitOrders.add(new LimitOrder(Symbol.XBTUSD, OrderSide.Buy, Model.getCoef(), entryPrice, null));
+            limitOrders.add(new LimitOrder(Symbol.XBTUSD, OrderSide.Buy, model.getCoef(), entryPrice, null));
 
-            entryPrice = entryPrice - Model.getStep();
-            HttpResponse<String> httpResponse = bitmexClient.sendOrder(limitOrders.get(i));
-            System.out.println(httpResponse.body());
+            entryPrice = entryPrice - model.getStep();
+            while (true) {
 
+                HttpResponse<String> httpResponse = bitmexClient.sendOrder(limitOrders.get(i));
+                String body = httpResponse.body();
+                System.out.println(body);
+                boolean failed = body.contains("error");
+
+                if (!failed) {
+                    break;
+                }
+                try {
+                    System.err.println("order creation failed, retrying with delay");
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
         orderPosition(bitmexClient);
 
         try {
-            WebSocket newWebSocket = new WebSocket(new URI(UtilURL.createWebsocketURL()));
+            WebSocket newWebSocket = new WebSocket(new URI(UtilURL.createWebsocketURL()), model);
             newWebSocket.connect();
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
-
     }
 
-
-    private static void currentMarketPrice(BitmexClient bitmexClient) {
+    private void currentMarketPrice(BitmexClient bitmexClient) {
         HttpResponse<String> response = bitmexClient.getInstrumentPrice();
         String jsonString = response.body();
         System.out.println(jsonString);
@@ -66,7 +82,7 @@ public class Main {
         System.out.println("\n" + "current price=" + currentPrice);
     }
 
-    private static void orderPosition(BitmexClient bitmexClient) {
+    private void orderPosition(BitmexClient bitmexClient) {
         HttpResponse<String> responseGetPosition = bitmexClient.getPosition();
         String jsonString = responseGetPosition.body();
         System.out.println(jsonString);
@@ -75,9 +91,5 @@ public class Main {
         Pojo[] pos = gson.fromJson(jsonString, Pojo[].class);
         System.out.println("Size pos array=" + pos.length);
         System.out.println("\n" + pos[0]);
-
-
     }
-
-
 }

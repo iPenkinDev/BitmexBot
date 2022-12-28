@@ -16,25 +16,30 @@ import java.net.URI;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.HashMap;
 
 public class WebSocket extends WebSocketClient {
 
-    private static Gson gson = new Gson();
-    private static Double entryPriceAfterReOrder;
-
-
-    public WebSocket(URI serverURI) {
-        super(serverURI);
-    }
+    private Gson gson = new Gson();
+    private Double entryPriceAfterReOrder;
+    private Model model;
 
     String expires = String.valueOf(Instant.now().getEpochSecond() + 10);
-    String signature = Signature.signatureToString(HMAC.calcHmacSha256(Model.getApiSecret().getBytes(StandardCharsets.UTF_8),
-            (Verb.GET + UtilURL.REALTIME + expires).getBytes(StandardCharsets.UTF_8)));
+    String signature;
 
+    HashMap<String, String> sideByOrderId = new HashMap();
+
+    public WebSocket(URI serverURI, Model model) {
+        super(serverURI);
+        this.model = model;
+        signature = Signature.signatureToString(HMAC.calcHmacSha256(model.getApiSecret().getBytes(StandardCharsets.UTF_8),
+                (Verb.GET + UtilURL.REALTIME + expires).getBytes(StandardCharsets.UTF_8)));
+    }
 
     @Override
     public void onOpen(ServerHandshake handshakedata) {
-        send("{\"op\": \"authKeyExpires\", \"args\": [\"" + Model.getApiKey() + "\", " + expires + ", \"" + signature + "\"]}");
+        send("{\"op\": \"authKeyExpires\", \"args\": [\"" + model.getApiKey() + "\", "
+                + expires + ", \"" + signature + "\"]}");
         send("{\"op\": \"subscribe\", \"args\": [\"order\"]}");
         System.out.println("opened connection");
         // if you plan to refuse connection based on ip or httpfields overload: onWebsocketHandshakeReceivedAsClient
@@ -52,43 +57,53 @@ public class WebSocket extends WebSocketClient {
                 System.out.println("data=" + data + "\n");
                 System.out.println("orderID=" + data.getOrderID());
                 System.out.println("side=" + data.getSide());
-                System.out.println("orderStatus=" + data.getOrdStatus());
+
+                String ordStatus = data.getOrdStatus();
+                if (ordStatus == null) {
+                    ordStatus = "null";
+                }
+                System.out.println("orderStatus=" + ordStatus);
                 System.out.println("avgPx=" + data.getAvgPx());
                 System.out.println("-------------------------------------------------");
 
+                if (data.getSide() != null) {
+                    sideByOrderId.put(data.getOrderID(), data.getSide());
+                }
 
-                if (data.getAvgPx() != null && data.getSide() != null && data.getSide().equals("Buy") && data.getOrdStatus().equals("Filled")) {
-                    entryPriceAfterReOrder = data.getAvgPx() + Model.getStep();
+                if (data.getAvgPx() != null && getSide(data.getOrderID()).equals("Buy") && ordStatus.equals("Filled")) {
+                    entryPriceAfterReOrder = data.getAvgPx() + model.getStep();
                     System.out.println("order selled");
                     System.out.println("entryPriceAfterReOrder=" + entryPriceAfterReOrder);
-                    LimitOrder limitOrder = new LimitOrder(Symbol.XBTUSD, OrderSide.Sell, Model.getCoef(), entryPriceAfterReOrder, null);
-                    HttpResponse<String> response = new BitmexClient(Model.getApiKey(), Model.getApiSecret(), true)
+                    LimitOrder limitOrder = new LimitOrder(Symbol.XBTUSD, OrderSide.Sell, model.getCoef(), entryPriceAfterReOrder, null);
+                    HttpResponse<String> response = new BitmexClient(model.getApiKey(), model.getApiSecret(), true)
                             .sendOrder(limitOrder);
                     System.out.println(response.body());
                 }
-                if (data.getAvgPx() != null && data.getSide() != null && data.getSide().equals("Sell") && data.getOrdStatus().equals("Filled")) {
-                    entryPriceAfterReOrder = data.getAvgPx() + Model.getStep();
+                if (data.getAvgPx() != null && getSide(data.getOrderID()).equals("Sell") && ordStatus.equals("Filled")) {
+                    entryPriceAfterReOrder = data.getAvgPx() + model.getStep();
                     System.out.println("order buyed");
                     System.out.println("entryPriceAfterReOrder=" + entryPriceAfterReOrder);
-                    LimitOrder limitOrder = new LimitOrder(Symbol.XBTUSD, OrderSide.Buy, Model.getCoef(), entryPriceAfterReOrder, null);
-                    HttpResponse<String> httpResponse = new BitmexClient(Model.getApiKey(), Model.getApiSecret(), true)
+                    LimitOrder limitOrder = new LimitOrder(Symbol.XBTUSD, OrderSide.Buy, model.getCoef(), entryPriceAfterReOrder, null);
+                    HttpResponse<String> httpResponse = new BitmexClient(model.getApiKey(), model.getApiSecret(), true)
                             .sendOrder(limitOrder);
                     System.out.println(httpResponse.body());
                 }
 
-                if (data.getOrdStatus().equals("Filled") && data.getOrdStatus()!=null && data.getSide() == null){
-                    entryPriceAfterReOrder = data.getAvgPx() + Model.getStep();
+                if (ordStatus.equals("Filled") && getSide(data.getOrderID()).equals("Buy")) {
+                    entryPriceAfterReOrder = data.getAvgPx() + model.getStep();
                     System.out.println("order buyed");
                     System.out.println("entryPriceAfterReOrder=" + entryPriceAfterReOrder);
-                    LimitOrder limitOrder = new LimitOrder(Symbol.XBTUSD, OrderSide.Buy, Model.getCoef(), entryPriceAfterReOrder, null);
-                    HttpResponse<String> httpResponse = new BitmexClient(Model.getApiKey(), Model.getApiSecret(), true)
+                    LimitOrder limitOrder = new LimitOrder(Symbol.XBTUSD, OrderSide.Buy, model.getCoef(), entryPriceAfterReOrder, null);
+                    HttpResponse<String> httpResponse = new BitmexClient(model.getApiKey(), model.getApiSecret(), true)
                             .sendOrder(limitOrder);
                     System.out.println(httpResponse.body());
                 }
-
-
             }
         }
+    }
+
+    private String getSide(String orderID) {
+        return sideByOrderId.getOrDefault(orderID, "unknow");
     }
 
     @Override
