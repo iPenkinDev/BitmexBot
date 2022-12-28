@@ -20,18 +20,19 @@ import java.util.HashMap;
 
 public class WebSocket extends WebSocketClient {
 
-    private Gson gson = new Gson();
-    private Double entryPriceAfterReOrder;
     private Model model;
+    private Double entryPriceAfterReOrder;
 
-    String expires = String.valueOf(Instant.now().getEpochSecond() + 10);
-    String signature;
+    private String expires;
+    private String signature;
 
-    HashMap<String, String> sideByOrderId = new HashMap();
+    private Gson gson = new Gson();
+    private HashMap<String, String> sideByOrderId = new HashMap();
 
     public WebSocket(URI serverURI, Model model) {
         super(serverURI);
         this.model = model;
+        expires = String.valueOf(Instant.now().getEpochSecond() + 10);
         signature = Signature.signatureToString(HMAC.calcHmacSha256(model.getApiSecret().getBytes(StandardCharsets.UTF_8),
                 (Verb.GET + UtilURL.REALTIME + expires).getBytes(StandardCharsets.UTF_8)));
     }
@@ -89,21 +90,21 @@ public class WebSocket extends WebSocketClient {
                     System.out.println(httpResponse.body());
                 }
 
-                if (ordStatus.equals("Filled") && getSide(data.getOrderID()).equals("Buy")) {
-                    entryPriceAfterReOrder = data.getAvgPx() + model.getStep();
-                    System.out.println("order buyed");
-                    System.out.println("entryPriceAfterReOrder=" + entryPriceAfterReOrder);
-                    LimitOrder limitOrder = new LimitOrder(Symbol.XBTUSD, OrderSide.Buy, model.getCoef(), entryPriceAfterReOrder, null);
-                    HttpResponse<String> httpResponse = new BitmexClient(model.getApiKey(), model.getApiSecret(), true)
-                            .sendOrder(limitOrder);
-                    System.out.println(httpResponse.body());
-                }
+//                if (ordStatus.equals("Filled") && getSide(data.getOrderID()).equals("Buy")) {
+//                    entryPriceAfterReOrder = data.getAvgPx() + model.getStep();
+//                    System.out.println("order buyed");
+//                    System.out.println("entryPriceAfterReOrder=" + entryPriceAfterReOrder);
+//                    LimitOrder limitOrder = new LimitOrder(Symbol.XBTUSD, OrderSide.Buy, model.getCoef(), entryPriceAfterReOrder, null);
+//                    HttpResponse<String> httpResponse = new BitmexClient(model.getApiKey(), model.getApiSecret(), true)
+//                            .sendOrder(limitOrder);
+//                    System.out.println(httpResponse.body());
+//                }
             }
         }
     }
 
     private String getSide(String orderID) {
-        return sideByOrderId.getOrDefault(orderID, "unknow");
+        return sideByOrderId.getOrDefault(orderID, "unknown");
     }
 
     @Override
