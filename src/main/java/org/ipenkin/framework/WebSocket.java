@@ -76,6 +76,16 @@ public class WebSocket extends WebSocketClient {
                     System.out.println(httpResponse.body());
                 }
 
+                if (data.getOrdStatus().equals("Filled") && data.getOrdStatus()!=null && data.getSide() == null){
+                    entryPriceAfterReOrder = data.getAvgPx() + Model.getStep();
+                    System.out.println("order buyed");
+                    System.out.println("entryPriceAfterReOrder=" + entryPriceAfterReOrder);
+                    LimitOrder limitOrder = new LimitOrder(Symbol.XBTUSD, OrderSide.Buy, Model.getCoef(), entryPriceAfterReOrder, null);
+                    HttpResponse<String> httpResponse = new BitmexClient(Model.getApiKey(), Model.getApiSecret(), true)
+                            .sendOrder(limitOrder);
+                    System.out.println(httpResponse.body());
+                }
+
 
             }
         }
