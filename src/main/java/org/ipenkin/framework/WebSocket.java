@@ -70,36 +70,35 @@ public class WebSocket extends WebSocketClient {
                 if (data.getSide() != null) {
                     sideByOrderId.put(data.getOrderID(), data.getSide());
                 }
-
-                if (data.getAvgPx() != null && getSide(data.getOrderID()).equals("Buy") && ordStatus.equals("Filled")) {
-                    entryPriceAfterReOrder = data.getAvgPx() + model.getStep();
-                    System.out.println("order selled");
-                    System.out.println("entryPriceAfterReOrder=" + entryPriceAfterReOrder);
-                    LimitOrder limitOrder = new LimitOrder(Symbol.XBTUSD, OrderSide.Sell, model.getCoef(), entryPriceAfterReOrder, null);
-                    HttpResponse<String> response = new BitmexClient(model.getApiKey(), model.getApiSecret(), true)
-                            .sendOrder(limitOrder);
-                    System.out.println(response.body());
-                }
-                if (data.getAvgPx() != null && getSide(data.getOrderID()).equals("Sell") && ordStatus.equals("Filled")) {
-                    entryPriceAfterReOrder = data.getAvgPx() + model.getStep();
-                    System.out.println("order buyed");
-                    System.out.println("entryPriceAfterReOrder=" + entryPriceAfterReOrder);
-                    LimitOrder limitOrder = new LimitOrder(Symbol.XBTUSD, OrderSide.Buy, model.getCoef(), entryPriceAfterReOrder, null);
-                    HttpResponse<String> httpResponse = new BitmexClient(model.getApiKey(), model.getApiSecret(), true)
-                            .sendOrder(limitOrder);
-                    System.out.println(httpResponse.body());
-                }
-
-//                if (ordStatus.equals("Filled") && getSide(data.getOrderID()).equals("Buy")) {
-//                    entryPriceAfterReOrder = data.getAvgPx() + model.getStep();
-//                    System.out.println("order buyed");
-//                    System.out.println("entryPriceAfterReOrder=" + entryPriceAfterReOrder);
-//                    LimitOrder limitOrder = new LimitOrder(Symbol.XBTUSD, OrderSide.Buy, model.getCoef(), entryPriceAfterReOrder, null);
-//                    HttpResponse<String> httpResponse = new BitmexClient(model.getApiKey(), model.getApiSecret(), true)
-//                            .sendOrder(limitOrder);
-//                    System.out.println(httpResponse.body());
-//                }
+                //order sell
+                createOrderSell(data, ordStatus);
+                //order buy
+                createOrderBuy(data, ordStatus);
             }
+}
+    }
+
+    private void createOrderBuy(Pojo.Data data, String ordStatus) {
+        if (data.getAvgPx() != null && getSide(data.getOrderID()).equals("Sell") && ordStatus.equals("Filled")) {
+            entryPriceAfterReOrder = data.getAvgPx() + model.getStep();
+            System.out.println("order buyed");
+            System.out.println("entryPriceAfterReOrder=" + entryPriceAfterReOrder);
+            LimitOrder limitOrder = new LimitOrder(Symbol.XBTUSD, OrderSide.Buy, model.getCoef(), entryPriceAfterReOrder, null);
+            HttpResponse<String> httpResponse = new BitmexClient(model.getApiKey(), model.getApiSecret(), true)
+                    .sendOrder(limitOrder);
+            System.out.println(httpResponse.body());
+        }
+    }
+
+    private void createOrderSell(Pojo.Data data, String ordStatus) {
+        if (data.getAvgPx() != null && getSide(data.getOrderID()).equals("Buy") && ordStatus.equals("Filled")) {
+            entryPriceAfterReOrder = data.getAvgPx() + model.getStep();
+            System.out.println("order selled");
+            System.out.println("entryPriceAfterReOrder=" + entryPriceAfterReOrder);
+            LimitOrder limitOrder = new LimitOrder(Symbol.XBTUSD, OrderSide.Sell, model.getCoef(), entryPriceAfterReOrder, null);
+            HttpResponse<String> response = new BitmexClient(model.getApiKey(), model.getApiSecret(), true)
+                    .sendOrder(limitOrder);
+            System.out.println(response.body());
         }
     }
 
