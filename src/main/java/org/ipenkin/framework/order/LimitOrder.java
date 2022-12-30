@@ -1,9 +1,9 @@
 package org.ipenkin.framework.order;
 
-import org.ipenkin.framework.constants.ExecutionInstructions;
-import org.ipenkin.framework.constants.OrderSide;
-import org.ipenkin.framework.constants.OrderType;
-import org.ipenkin.framework.constants.Symbol;
+import org.ipenkin.authentication.constants.ExecutionInstructions;
+import org.ipenkin.authentication.constants.OrderSide;
+import org.ipenkin.authentication.constants.OrderType;
+import org.ipenkin.authentication.constants.Symbol;
 
 public class LimitOrder implements Order{
     private Symbol symbol;

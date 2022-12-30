@@ -1,4 +1,4 @@
-package org.ipenkin.framework.constants.URL;
+package org.ipenkin.authentication.constants.URL;
 
 public class UtilURL {
     public static final String PROTOCOL = "https://";

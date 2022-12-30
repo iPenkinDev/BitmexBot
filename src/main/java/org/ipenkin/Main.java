@@ -5,9 +5,9 @@ import org.ipenkin.framework.BitmexClient;
 import org.ipenkin.framework.CurrentPrice;
 import org.ipenkin.framework.Pojo;
 import org.ipenkin.framework.WebSocket;
-import org.ipenkin.framework.constants.OrderSide;
-import org.ipenkin.framework.constants.Symbol;
-import org.ipenkin.framework.constants.URL.UtilURL;
+import org.ipenkin.authentication.constants.OrderSide;
+import org.ipenkin.authentication.constants.Symbol;
+import org.ipenkin.authentication.constants.URL.UtilURL;
 import org.ipenkin.framework.order.LimitOrder;
 import org.ipenkin.model.Model;
 
@@ -92,4 +92,5 @@ public class Main {
         System.out.println("Size pos array=" + pos.length);
         System.out.println("\n" + pos[0]);
     }
+
 }

@@ -2,11 +2,11 @@ package org.ipenkin.framework;
 
 import com.google.gson.Gson;
 import org.ipenkin.authentication.Signature;
-import org.ipenkin.framework.constants.URL.ResourceURL;
-import org.ipenkin.framework.constants.URL.URL;
-import org.ipenkin.framework.constants.URL.URLBuilder;
-import org.ipenkin.framework.constants.URL.UtilURL;
-import org.ipenkin.framework.constants.Verb;
+import org.ipenkin.authentication.constants.URL.ResourceURL;
+import org.ipenkin.authentication.constants.URL.URL;
+import org.ipenkin.authentication.constants.URL.URLBuilder;
+import org.ipenkin.authentication.constants.URL.UtilURL;
+import org.ipenkin.authentication.constants.Verb;
 import org.ipenkin.framework.order.Order;
 
 import java.io.IOException;

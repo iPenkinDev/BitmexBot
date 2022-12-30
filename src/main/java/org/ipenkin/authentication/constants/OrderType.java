@@ -1,4 +1,4 @@
-package org.ipenkin.framework.constants;
+package org.ipenkin.authentication.constants;
 
 public enum OrderType {
     Market,

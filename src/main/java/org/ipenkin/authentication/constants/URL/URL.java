@@ -1,4 +1,4 @@
-package org.ipenkin.framework.constants.URL;
+package org.ipenkin.authentication.constants.URL;
 
 public class URL {
     private String protocol;

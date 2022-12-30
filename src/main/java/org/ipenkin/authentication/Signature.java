@@ -1,7 +1,5 @@
 package org.ipenkin.authentication;
 
-import org.ipenkin.framework.constants.URL.URL;
-
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 
