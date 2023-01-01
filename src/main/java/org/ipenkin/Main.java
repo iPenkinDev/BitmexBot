@@ -92,5 +92,4 @@ public class Main {
         System.out.println("Size pos array=" + pos.length);
         System.out.println("\n" + pos[0]);
     }
-
 }
