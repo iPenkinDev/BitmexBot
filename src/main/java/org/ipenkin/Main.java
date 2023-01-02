@@ -21,7 +21,6 @@ import java.util.List;
 public class Main {
     private Double currentPrice;
     private Double entryPrice;
-
     private List<LimitOrder> limitOrders;
 
     public static void main(String[] args) {
