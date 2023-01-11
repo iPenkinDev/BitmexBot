@@ -9,7 +9,7 @@ import org.ipenkin.authentication.constants.OrderSide;
 import org.ipenkin.authentication.constants.Symbol;
 import org.ipenkin.authentication.constants.URL.UtilURL;
 import org.ipenkin.framework.order.LimitOrder;
-import org.ipenkin.model.Model;
+import org.ipenkin.model.Bot;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -29,7 +29,7 @@ public class Main {
 
     private void run() {
         limitOrders = new ArrayList<>();
-        Model model = new Model("SSijwr_9yp84o8Juy8Cm644T", "iKwTxNOlzS6iITCdEPHfGx8SQW4HK9_Dfvnl3NUwuBf12n48", 1.0, 3, 100.0);
+        Bot model = new Bot("SSijwr_9yp84o8Juy8Cm644T", "iKwTxNOlzS6iITCdEPHfGx8SQW4HK9_Dfvnl3NUwuBf12n48", 1.0, 3, 100.0);
 
         BitmexClient bitmexClient = new BitmexClient(model.getApiKey(), model.getApiSecret(), true);
         currentMarketPrice(bitmexClient);
@@ -41,7 +41,6 @@ public class Main {
 
             entryPrice = entryPrice - model.getStep();
             while (true) {
-
                 HttpResponse<String> httpResponse = bitmexClient.sendOrder(limitOrders.get(i));
                 String body = httpResponse.body();
                 System.out.println(body);

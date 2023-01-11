@@ -8,7 +8,7 @@ import org.ipenkin.authentication.constants.Symbol;
 import org.ipenkin.authentication.constants.URL.UtilURL;
 import org.ipenkin.authentication.constants.Verb;
 import org.ipenkin.framework.order.LimitOrder;
-import org.ipenkin.model.Model;
+import org.ipenkin.model.Bot;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
@@ -20,7 +20,7 @@ import java.util.HashMap;
 
 public class WebSocket extends WebSocketClient {
 
-    private Model model;
+    private Bot model;
     private Double entryPriceAfterReOrder;
 
     private String expires;
@@ -29,7 +29,7 @@ public class WebSocket extends WebSocketClient {
     private Gson gson = new Gson();
     private HashMap<String, String> sideByOrderId = new HashMap();
 
-    public WebSocket(URI serverURI, Model model) {
+    public WebSocket(URI serverURI, Bot model) {
         super(serverURI);
         this.model = model;
         expires = String.valueOf(Instant.now().getEpochSecond() + 10);

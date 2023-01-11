@@ -1,13 +1,13 @@
 package org.ipenkin.model;
 
-public class Model {
+public class Bot {
     private String apiKey ;
     private String apiSecret ;
     private double step;
     private int level;
     private double coef;
 
-    public Model(String apiKey, String apiSecret, Double step, Integer level, Double coef) {
+    public Bot(String apiKey, String apiSecret, Double step, Integer level, Double coef) {
         this.apiKey = apiKey;
         this.apiSecret = apiSecret;
         this.step = step;
