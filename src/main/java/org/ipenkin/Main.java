@@ -45,7 +45,6 @@ public class Main {
                 String body = httpResponse.body();
                 System.out.println(body);
                 boolean failed = body.contains("error");
-
                 if (!failed) {
                     break;
                 }
