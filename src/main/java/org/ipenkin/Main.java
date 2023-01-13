@@ -38,7 +38,6 @@ public class Main {
         for (int i = 0; i < model.getLevel(); i++) {
             System.out.println("entry price=" + entryPrice);
             limitOrders.add(new LimitOrder(Symbol.XBTUSD, OrderSide.Buy, model.getCoef(), entryPrice, null));
-
             entryPrice = entryPrice - model.getStep();
             while (true) {
                 HttpResponse<String> httpResponse = bitmexClient.sendOrder(limitOrders.get(i));
