@@ -29,16 +29,16 @@ public class Main {
 
     private void run() {
         limitOrders = new ArrayList<>();
-        Bot model = new Bot("SSijwr_9yp84o8Juy8Cm644T", "iKwTxNOlzS6iITCdEPHfGx8SQW4HK9_Dfvnl3NUwuBf12n48", 1.0, 3, 100.0);
+        Bot bot = new Bot("SSijwr_9yp84o8Juy8Cm644T", "iKwTxNOlzS6iITCdEPHfGx8SQW4HK9_Dfvnl3NUwuBf12n48", 1.0, 3, 100.0);
 
-        BitmexClient bitmexClient = new BitmexClient(model.getApiKey(), model.getApiSecret(), true);
+        BitmexClient bitmexClient = new BitmexClient(bot.getApiKey(), bot.getApiSecret(), true);
         currentMarketPrice(bitmexClient);
-        entryPrice = currentPrice - model.getStep();
+        entryPrice = currentPrice - bot.getStep();
 
-        for (int i = 0; i < model.getLevel(); i++) {
+        for (int i = 0; i < bot.getLevel(); i++) {
             System.out.println("entry price=" + entryPrice);
-            limitOrders.add(new LimitOrder(Symbol.XBTUSD, OrderSide.Buy, model.getCoef(), entryPrice, null));
-            entryPrice = entryPrice - model.getStep();
+            limitOrders.add(new LimitOrder(Symbol.XBTUSD, OrderSide.Buy, bot.getCoef(), entryPrice, null));
+            entryPrice = entryPrice - bot.getStep();
             while (true) {
                 HttpResponse<String> httpResponse = bitmexClient.sendOrder(limitOrders.get(i));
                 String body = httpResponse.body();
@@ -58,7 +58,7 @@ public class Main {
         orderPosition(bitmexClient);
 
         try {
-            WebSocket newWebSocket = new WebSocket(new URI(UtilURL.createWebsocketURL()), model);
+            WebSocket newWebSocket = new WebSocket(new URI(UtilURL.createWebsocketURL()), bot);
             newWebSocket.connect();
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
