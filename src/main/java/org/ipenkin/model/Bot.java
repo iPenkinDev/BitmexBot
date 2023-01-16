@@ -1,8 +1,8 @@
 package org.ipenkin.model;
 
 public class Bot {
-    private String apiKey ;
-    private String apiSecret ;
+    private String apiKey;
+    private String apiSecret;
     private double step;
     private int level;
     private double coef;
