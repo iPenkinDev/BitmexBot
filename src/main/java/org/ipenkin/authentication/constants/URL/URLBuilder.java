@@ -27,5 +27,4 @@ public class URLBuilder {
     public URL build(){
         return url;
     }
-
 }

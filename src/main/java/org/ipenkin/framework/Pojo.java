@@ -16,10 +16,6 @@ public class Pojo {
         return data;
     }
 
-    public void setData(List<Data> data) {
-        this.data = data;
-    }
-
     class Data {
         private String orderID;
         private String side;
@@ -69,4 +65,3 @@ public class Pojo {
         }
     }
 }
-
