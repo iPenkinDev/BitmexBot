@@ -1,4 +1,4 @@
-package org.ipenkin.framework;
+package org.ipenkin.model;
 
 public class CurrentPrice {
     private Double price;

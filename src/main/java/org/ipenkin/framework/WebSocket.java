@@ -49,11 +49,11 @@ public class WebSocket extends WebSocketClient {
     @Override
     public void onMessage(String message) {
         System.out.println("received: " + message);
-        Pojo pojo = gson.fromJson(message, Pojo.class);
+        DataList pojo = gson.fromJson(message, DataList.class);
         System.out.println("-------------------------------------------------");
         System.out.println("pojo=" + pojo);
         if (pojo.getData() != null) {
-            for (Pojo.Data data : pojo.getData()) {
+            for (DataList.Data data : pojo.getData()) {
                 System.out.println("-------------------------------------------------");
                 System.out.println("data=" + data + "\n");
                 System.out.println("orderID=" + data.getOrderID());
@@ -78,7 +78,7 @@ public class WebSocket extends WebSocketClient {
 }
     }
 
-    private void createOrderBuy(Pojo.Data data, String ordStatus) {
+    private void createOrderBuy(DataList.Data data, String ordStatus) {
         if (data.getAvgPx() != null && getSide(data.getOrderID()).equals("Sell") && ordStatus.equals("Filled")) {
             entryPriceAfterReOrder = data.getAvgPx() + model.getStep();
             System.out.println("order buyed");
@@ -90,7 +90,7 @@ public class WebSocket extends WebSocketClient {
         }
     }
 
-    private void createOrderSell(Pojo.Data data, String ordStatus) {
+    private void createOrderSell(DataList.Data data, String ordStatus) {
         if (data.getAvgPx() != null && getSide(data.getOrderID()).equals("Buy") && ordStatus.equals("Filled")) {
             entryPriceAfterReOrder = data.getAvgPx() + model.getStep();
             System.out.println("order selled");

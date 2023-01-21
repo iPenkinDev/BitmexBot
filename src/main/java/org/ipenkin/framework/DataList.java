@@ -2,12 +2,12 @@ package org.ipenkin.framework;
 
 import java.util.List;
 
-public class Pojo {
+public class DataList {
     private List<Data> data;
 
     @Override
     public String toString() {
-        return "Pojo{" +
+        return "DataListDataList{" +
                 "data=" + getData() +
                 '}';
     }
@@ -16,7 +16,7 @@ public class Pojo {
         return data;
     }
 
-    class Data {
+    static class Data {
         private String orderID;
         private String side;
         private String ordStatus;

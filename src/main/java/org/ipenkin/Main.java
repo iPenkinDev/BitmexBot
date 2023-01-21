@@ -2,8 +2,8 @@ package org.ipenkin;
 
 import com.google.gson.Gson;
 import org.ipenkin.framework.BitmexClient;
-import org.ipenkin.framework.CurrentPrice;
-import org.ipenkin.framework.Pojo;
+import org.ipenkin.model.CurrentPrice;
+import org.ipenkin.framework.DataList;
 import org.ipenkin.framework.WebSocket;
 import org.ipenkin.authentication.constants.OrderSide;
 import org.ipenkin.authentication.constants.Symbol;
@@ -83,8 +83,8 @@ public class Main {
         String jsonString = responseGetPosition.body();
         System.out.println(jsonString);
         Gson gson = new Gson();
-        Pojo position = new Pojo();
-        Pojo[] pos = gson.fromJson(jsonString, Pojo[].class);
+        DataList position = new DataList();
+        DataList[] pos = gson.fromJson(jsonString, DataList[].class);
         System.out.println("Size pos array=" + pos.length);
         System.out.println("\n" + pos[0]);
     }
