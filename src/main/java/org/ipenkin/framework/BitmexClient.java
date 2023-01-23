@@ -122,7 +122,6 @@ public class BitmexClient {
             throw new RuntimeException(e);
         }
         return response;
-
     }
 
     private String createSignature(URL url, String verb, String data, String expires) {
