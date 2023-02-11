@@ -137,6 +137,5 @@ public class BitmexClient {
 
     private String createExpires() {
         return String.valueOf(Instant.now().getEpochSecond() + 10);
-
     }
 }
